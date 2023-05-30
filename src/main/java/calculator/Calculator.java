@@ -1,3 +1,7 @@
+package calculator;
+
+import operation.AbstractOperationStack;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -39,7 +43,7 @@ public class Calculator {
     /**
      * 内部类，实现操作记录的回退和重做
      */
-    private class ResultStack {
+    private class ResultStack extends AbstractOperationStack<BigDecimal> {
 
         /**
          * 永远指向 undo 操作需要返回的值的下标
@@ -65,7 +69,7 @@ public class Calculator {
             }
         };
 
-        private BigDecimal undo() {
+        protected BigDecimal undo() {
             if (undoIndex < 0) {
                 operateFlag = INIT;
                 return null;
@@ -84,7 +88,7 @@ public class Calculator {
             return result;
         }
 
-        private BigDecimal redo() {
+        protected BigDecimal redo() {
             if (redoIndex == maxRedoIndex) {
                 return null;
             }
@@ -103,7 +107,7 @@ public class Calculator {
          * 每次计算操作都记录结果值
          * 并触发 undo 和 redo 的下标刷新
          */
-        private void recordResult(BigDecimal result) {
+        protected void recordResult(BigDecimal result) {
             numArray.add(redoIndex, result);
 
             undoIndex++;
